@@ -83,6 +83,8 @@
 import axios from 'axios';
 import { getTopLevelFolders, getChildrenFromID } from './../driveFunctions';
 
+let prodEnv = true;
+
 export default {
   name: 'Browser',
   data() {
@@ -107,7 +109,11 @@ export default {
 
   mounted() {
     axios
-      .get(`http://localhost:3000/getfiles`)
+      .get(
+        `${
+          prodEnv ? 'https://unigeo.deta.dev' : 'http://localhost:3000'
+        }/getfiles`
+      )
       .then(({ data }) => {
         this.files = data.files;
         this.fileTreeString = JSON.stringify(getTopLevelFolders(this.files));
