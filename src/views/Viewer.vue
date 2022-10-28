@@ -22,7 +22,7 @@
     >
       <div class="viewer__warning">
         Note that you will only be able to view this file and NOT download it.
-        Please ask UniGeo admins for download access.
+        Please ask Universal Geography admins for download access.
       </div>
       <div class="viewer__cta">
         <button class="viewer__cta--btn" @click="openFile">View File</button>
