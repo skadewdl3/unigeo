@@ -82,7 +82,6 @@
           </div>
         </div>
       </div>
-      <p>{{ this }}</p>
     </div>
   </div>
 </template>
