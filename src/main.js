@@ -9,7 +9,9 @@ import {
   FileWordTwoTone,
   FileExcelTwoTone,
   FolderTwoTone,
-  LeftOutlined
+  LeftOutlined,
+  ClockCircleTwoTone,
+  FileTwoTone
 } from '@ant-design/icons-vue';
 
 import './assets/main.css';
@@ -25,8 +27,7 @@ const router = createRouter({
     {
       path: '/view/',
       name: 'view',
-      component: Viewer,
-      props: true
+      component: Viewer
     }
   ]
 });
@@ -39,6 +40,8 @@ app.component('file-excel-two-tone', FileExcelTwoTone);
 app.component('file-word-two-tone', FileWordTwoTone);
 app.component('folder-two-tone', FolderTwoTone);
 app.component('left-outlined', LeftOutlined);
+app.component('clock-circle-two-tone', ClockCircleTwoTone);
+app.component('file-two-tone', FileTwoTone);
 
 app.use(router);
 

@@ -83,14 +83,14 @@
 import axios from 'axios';
 import { getTopLevelFolders, getChildrenFromID } from './../driveFunctions';
 
-let prodEnv = true;
+let prodEnv = false;
 
 export default {
   name: 'Browser',
   data() {
     this.prevData = {};
     return {
-      switching: false,
+      switching: true,
       prevParents: [],
       files: [],
       fileTreeString: '[]',
@@ -117,6 +117,9 @@ export default {
       .then(({ data }) => {
         this.files = data.files;
         this.fileTreeString = JSON.stringify(getTopLevelFolders(this.files));
+        setTimeout(() => {
+          this.switching = false;
+        }, 1000);
       })
       .catch(err => console.log(err));
   },
@@ -130,7 +133,10 @@ export default {
     },
     async updateFileTree(file, back = false) {
       if (file && !file.mimeType.endsWith('folder')) {
-        this.$router.push({ name: 'view', state: { file } });
+        this.switching = true;
+        setTimeout(() => {
+          this.$router.push({ name: 'view', state: { file } });
+        }, 400);
       }
 
       this.switching = true;
