@@ -110,7 +110,6 @@ export default {
 
   mounted() {
     this.showLoadingScreen(true);
-    console.log(this.$store.state);
     if (
       this.$store.state.prevFileTreeString &&
       this.$store.state.prevParentFile &&
@@ -137,7 +136,6 @@ export default {
         }/getfiles`
       )
       .then(({ data }) => {
-        console.log(data.files);
         this.files = data.files;
         this.fileTreeString = JSON.stringify(getTopLevelFolders(this.files));
         setTimeout(() => {
@@ -151,7 +149,6 @@ export default {
     showLoadingScreen(val) {
       this.switching = val;
       this.setLoading(val);
-      console.log('this ran: ', val);
     },
     delay(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
@@ -164,7 +161,6 @@ export default {
         this.$store.commit('setFiles', this.files);
         this.$store.commit('setPrevFileTreeString', this.fileTreeString);
         this.$store.commit('setPrevParentFile', this.parentFile);
-        console.log('prev: ', this.prevParents);
         this.$store.commit('setPrevData', this.prevData);
         this.$store.commit('setPrevParents', this.prevParents);
         setTimeout(() => {
@@ -202,11 +198,9 @@ export default {
       this.prevParents.push(this.parentFile);
     },
     goBack() {
-      console.log(Array.from(this.prevParents));
       this.showLoadingScreen(true);
       setTimeout(() => {
         this.parentFile = this.prevParents.pop();
-        console.log(this.parentFile);
 
         this.updateFileTree(
           this.prevParents.length != 0 ? this.parentFile : null,
