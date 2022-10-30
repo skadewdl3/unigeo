@@ -1,11 +1,21 @@
 import { fileURLToPath, URL } from 'node:url';
-
+import filterReplace from 'vite-plugin-filter-replace';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    filterReplace([
+      {
+        filter: /\.vue/,
+        replace: {
+          from: 'prodEnv = false',
+          to: 'prodEnv = true'
+        }
+      }
+    ])
+  ],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))

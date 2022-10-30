@@ -12,6 +12,7 @@
     "dayjs": "^1.11.6",
     "googleapis": "^108.0.1",
     "pretty-bytes": "^6.0.0",
+    "vite-plugin-filter-replace": "^0.1.9",
     "vue": "^3.2.41",
     "vue-router": "^4.1.6",
     "vuex": "^4.0.2"

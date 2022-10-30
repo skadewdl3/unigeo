@@ -109,6 +109,11 @@ export default {
   },
 
   mounted() {
+    console.log(
+      `${
+        prodEnv ? 'https://unigeo.deta.dev' : 'http://localhost:3000'
+      }/getfiles`
+    );
     this.showLoadingScreen(true);
     if (
       this.$store.state.prevFileTreeString &&
