@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-let prodEnv = true;
+let prodEnv = false;
 
 const sortFilesByName = arr => {
   const sorter = (a, b) => {
