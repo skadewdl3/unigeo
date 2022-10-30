@@ -83,7 +83,7 @@
 import axios from 'axios';
 import { getTopLevelFolders, getChildrenFromID } from './../driveFunctions';
 
-let prodEnv = false;
+let prodEnv = true;
 
 export default {
   name: 'Browser',

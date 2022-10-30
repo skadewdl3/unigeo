@@ -58,7 +58,6 @@ const store = createStore({
       state.prevData = val;
     },
     setPrevParents(state, val) {
-      console.log(val);
       state.prevParents = val;
     },
     setFiles(state, val) {
