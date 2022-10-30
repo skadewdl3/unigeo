@@ -137,6 +137,7 @@ export default {
         }/getfiles`
       )
       .then(({ data }) => {
+        console.log(data.files);
         this.files = data.files;
         this.fileTreeString = JSON.stringify(getTopLevelFolders(this.files));
         setTimeout(() => {
