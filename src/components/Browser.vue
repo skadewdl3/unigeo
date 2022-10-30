@@ -83,10 +83,11 @@
 import axios from 'axios';
 import { getTopLevelFolders, getChildrenFromID } from './../driveFunctions';
 
-let prodEnv = true;
+let prodEnv = false;
 
 export default {
   name: 'Browser',
+  props: ['setLoading'],
   data() {
     this.prevData = {};
     return {
@@ -108,6 +109,27 @@ export default {
   },
 
   mounted() {
+    this.showLoadingScreen(true);
+    console.log(this.$store.state);
+    if (
+      this.$store.state.prevFileTreeString &&
+      this.$store.state.prevParentFile &&
+      this.$store.state.prevData &&
+      this.$store.state.prevParents
+    ) {
+      this.showLoadingScreen(true);
+      this.fileTreeString = this.$store.state.prevFileTreeString;
+      this.parentFile = this.$store.state.prevParentFile;
+      this.prevData = this.$store.state.prevData;
+      let temp = this.$store.state.prevParents;
+      this.prevParents = temp.slice(0, -1);
+      this.files = this.$store.state.files;
+      setTimeout(() => {
+        this.showLoadingScreen(false);
+        this.$store.dispatch('clearState');
+      }, 400);
+      return;
+    }
     axios
       .get(
         `${
@@ -118,31 +140,45 @@ export default {
         this.files = data.files;
         this.fileTreeString = JSON.stringify(getTopLevelFolders(this.files));
         setTimeout(() => {
-          this.switching = false;
+          this.showLoadingScreen(false);
         }, 1000);
       })
       .catch(err => console.log(err));
   },
 
   methods: {
-    // openFile(file) {
-    //   this.$router.push({ name: 'view', params: { file } });
-    // },
-    sleep(ms) {
+    showLoadingScreen(val) {
+      this.switching = val;
+      this.setLoading(val);
+      console.log('this ran: ', val);
+    },
+    delay(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
     },
     async updateFileTree(file, back = false) {
       if (file && !file.mimeType.endsWith('folder')) {
-        this.switching = true;
+        // this.switching = true;
+        this.showLoadingScreen(true);
+        this.$store.commit('setSelectedFile', file);
+        this.$store.commit('setFiles', this.files);
+        this.$store.commit('setPrevFileTreeString', this.fileTreeString);
+        this.$store.commit('setPrevParentFile', this.parentFile);
+        console.log('prev: ', this.prevParents);
+        this.$store.commit('setPrevData', this.prevData);
+        this.$store.commit('setPrevParents', this.prevParents);
         setTimeout(() => {
-          this.$router.push({ name: 'view', state: { file } });
+          this.$router.push({
+            name: 'view'
+            // state: { file, prevFileTreeString: this.prevData.length - 1 }
+          });
         }, 400);
       }
 
-      this.switching = true;
+      // this.switching = true;
+      this.showLoadingScreen(true);
       if (file) {
         if (this.prevData[file.id]) {
-          await this.sleep(400);
+          await this.delay(400);
           this.fileTreeString = this.prevData[file.id];
         } else {
           let fileTreeString = JSON.stringify(await getChildrenFromID(file.id));
@@ -158,15 +194,18 @@ export default {
           await getTopLevelFolders(this.files)
         );
       }
-      this.switching = false;
+      // this.switching = false;
+      this.showLoadingScreen(false);
     },
     updatePrevParents() {
       this.prevParents.push(this.parentFile);
     },
     goBack() {
-      this.switching = true;
+      console.log(Array.from(this.prevParents));
+      this.showLoadingScreen(true);
       setTimeout(() => {
         this.parentFile = this.prevParents.pop();
+        console.log(this.parentFile);
 
         this.updateFileTree(
           this.prevParents.length != 0 ? this.parentFile : null,

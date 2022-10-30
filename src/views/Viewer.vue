@@ -95,9 +95,14 @@ dayjs.extend(relativeTime);
 
 export default {
   name: 'Viewer',
+  props: ['setLoading'],
   data() {
+    if (!this.$store.state.selectedFile) {
+      this.$router.push({ name: 'home' });
+    }
     let { name, size, mimeType, createdTime, webViewLink } =
-      window.history.state.file;
+      this.$store.state.selectedFile;
+
     return {
       name,
       size,
@@ -109,7 +114,8 @@ export default {
   },
   mounted() {
     setTimeout(() => {
-      this.switching = false;
+      // this.switching = false;
+      this.showLoadingScreen(false);
     }, 500);
   },
   computed: {
@@ -139,10 +145,17 @@ export default {
       document.body.removeChild(link);
     },
     goBack() {
-      this.switching = true;
+      // this.switching = true;
+      this.showLoadingScreen(true);
       setTimeout(() => {
-        this.$router.push({ name: 'home' });
+        this.$router.push({
+          name: 'home'
+        });
       }, 400);
+    },
+    showLoadingScreen(val) {
+      this.switching = val;
+      this.setLoading(val);
     }
   }
 };
