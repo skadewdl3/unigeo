@@ -35,14 +35,15 @@ const getFolderTree = async (updateFolderList, nextPageToken) => {
   let { data } = await drive.files.list({
     pageSize: 1000,
     pageToken: nextPageToken ? nextPageToken : '',
-    fields: 'files(id,name,parents,mimeType),nextPageToken',
+    fields:
+      'files(id,name,parents,mimeType,createdTime,size,webViewLink),nextPageToken',
     includeItemsFromAllDrives: true,
     supportsAllDrives: true
   });
   updateFolderList(data.files);
-  if (data.nextPageToken != '') {
-    getFolderTree(updateFolderList, nextPageToken);
-  }
+  // if (data.nextPageToken != '') {
+  //   getFolderTree(updateFolderList, nextPageToken);
+  // }
 };
 
 const getFolderTreeFromID = async (updateFolderList, nextPageToken, ID) => {
@@ -51,7 +52,7 @@ const getFolderTreeFromID = async (updateFolderList, nextPageToken, ID) => {
     pageSize: 1000,
     pageToken: nextPageToken ? nextPageToken : '',
     fields:
-      'files(id,name,parents,mimeType,webViewLink,webContentLink),nextPageToken',
+      'files(id,name,parents,mimeType,createdTime,size,webViewLink),nextPageToken',
     includeItemsFromAllDrives: true,
     supportsAllDrives: true
   });
