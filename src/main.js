@@ -2,6 +2,7 @@ import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import App from './App.vue';
 import Home from './views/Home.vue';
+import Search from './views/Search.vue';
 import Viewer from './views/Viewer.vue';
 import {
   FilePdfTwoTone,
@@ -11,7 +12,8 @@ import {
   FolderTwoTone,
   LeftOutlined,
   ClockCircleTwoTone,
-  FileTwoTone
+  FileTwoTone,
+  PlayCircleTwoTone
 } from '@ant-design/icons-vue';
 import { createStore } from 'vuex';
 
@@ -26,9 +28,14 @@ const router = createRouter({
       component: Home
     },
     {
-      path: '/view/',
+      path: '/view',
       name: 'view',
       component: Viewer
+    },
+    {
+      path: '/search',
+      name: 'search',
+      component: Search
     }
   ]
 });
@@ -84,6 +91,7 @@ app.component('folder-two-tone', FolderTwoTone);
 app.component('left-outlined', LeftOutlined);
 app.component('clock-circle-two-tone', ClockCircleTwoTone);
 app.component('file-two-tone', FileTwoTone);
+app.component('play-circle-two-tone', PlayCircleTwoTone);
 
 app.use(router);
 app.use(store);

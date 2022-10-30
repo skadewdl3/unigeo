@@ -1,5 +1,12 @@
 <template>
-  <div class="browser__container">
+  <div
+    class="browser__container"
+    :class="`${
+      this.searching
+        ? 'browser__container--invisible'
+        : 'browser__container--visible'
+    }`"
+  >
     <div
       class="browser__title"
       :class="`browser__title--${this.switching ? 'invisible' : 'visible'} ${
@@ -63,6 +70,11 @@
             "
             two-tone-color="#2980b9"
           />
+          <play-circle-two-tone
+            class="browser__file--icon"
+            v-if="file.mimeType.startsWith('video')"
+            two-tone-color="#18dcff"
+          />
           <folder-two-tone
             class="browser__file--icon"
             v-if="file.mimeType.endsWith('folder')"
@@ -87,7 +99,7 @@ let prodEnv = false;
 
 export default {
   name: 'Browser',
-  props: ['setLoading'],
+  props: ['setLoading', 'searching'],
   data() {
     this.prevData = {};
     return {
@@ -121,7 +133,10 @@ export default {
       this.parentFile = this.$store.state.prevParentFile;
       this.prevData = this.$store.state.prevData;
       let temp = this.$store.state.prevParents;
-      this.prevParents = temp.slice(0, -1);
+      if (this.$store.state.file) {
+        temp = temp.slice(0, -1);
+      }
+      this.prevParents = temp;
       this.files = this.$store.state.files;
       setTimeout(() => {
         this.showLoadingScreen(false);
@@ -145,7 +160,28 @@ export default {
       .catch(err => console.log(err));
   },
 
+  watch: {
+    searching(newVal, _) {
+      console.log('this ran');
+      console.log(newVal);
+      if (newVal) {
+        this.saveCurrentState(null);
+        setTimeout(() => {
+          this.$router.push({ name: 'search' });
+        }, 300);
+      }
+    }
+  },
+
   methods: {
+    saveCurrentState(f) {
+      this.$store.commit('setSelectedFile', f);
+      this.$store.commit('setFiles', this.files);
+      this.$store.commit('setPrevFileTreeString', this.fileTreeString);
+      this.$store.commit('setPrevParentFile', this.parentFile);
+      this.$store.commit('setPrevData', this.prevData);
+      this.$store.commit('setPrevParents', this.prevParents);
+    },
     showLoadingScreen(val) {
       this.switching = val;
       this.setLoading(val);
@@ -157,12 +193,8 @@ export default {
       if (file && !file.mimeType.endsWith('folder')) {
         // this.switching = true;
         this.showLoadingScreen(true);
-        this.$store.commit('setSelectedFile', file);
-        this.$store.commit('setFiles', this.files);
-        this.$store.commit('setPrevFileTreeString', this.fileTreeString);
-        this.$store.commit('setPrevParentFile', this.parentFile);
-        this.$store.commit('setPrevData', this.prevData);
-        this.$store.commit('setPrevParents', this.prevParents);
+
+        this.saveCurrentState(file);
         setTimeout(() => {
           this.$router.push({
             name: 'view'
@@ -217,6 +249,12 @@ export default {
 .browser
   &__container
     padding 0 10rem 0 10rem
+    transition all .2s ease-in-out
+
+    &--invisible
+      transform translateY(1%)
+      opacity 0
+
   &__file
     margin 0.5rem 0
     border-radius 0.3rem

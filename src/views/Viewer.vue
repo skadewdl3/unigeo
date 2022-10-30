@@ -72,13 +72,22 @@
               "
               two-tone-color="#2980b9"
             />
+            <play-circle-two-tone
+              v-if="detail.type == 'mimeType' && detail.val.startsWith('video')"
+              two-tone-color="#18dcff"
+            />
             <folder-two-tone
               v-if="detail.type == 'mimeType' && detail.val.endsWith('folder')"
               two-tone-color="#2c3e50"
             />
           </div>
           <div class="viewer__details--text">
-            {{ detail.label }}{{ detail.val }}
+            {{ detail.label
+            }}{{
+              detail.type == 'mimeType'
+                ? this.mime.extension(detail.val)
+                : detail.val
+            }}
           </div>
         </div>
       </div>
@@ -90,6 +99,7 @@
 import prettyBytes from 'pretty-bytes';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import mime from 'mime-types';
 
 dayjs.extend(relativeTime);
 
@@ -97,6 +107,7 @@ export default {
   name: 'Viewer',
   props: ['setLoading'],
   data() {
+    this.mime = mime;
     if (!this.$store.state.selectedFile) {
       this.$router.push({ name: 'home' });
     }
@@ -114,7 +125,6 @@ export default {
   },
   mounted() {
     setTimeout(() => {
-      // this.switching = false;
       this.showLoadingScreen(false);
     }, 500);
   },

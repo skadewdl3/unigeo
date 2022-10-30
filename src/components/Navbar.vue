@@ -9,6 +9,12 @@
       </div>
       <div class="search">
         <input
+          @click="this.switchToSearch"
+          :class="`${
+            this.searching
+              ? 'search__input--invisible'
+              : 'search__input--visible'
+          }`"
           type="text"
           class="search__input"
           placeholder="Search the world..."
@@ -56,6 +62,7 @@
 <script>
 export default {
   name: 'Navbar',
+  props: ['setSearching', 'searching'],
   computed: {
     currentPosition() {
       return this.theme === 'light' ? 'left' : 'right';
@@ -69,6 +76,9 @@ export default {
     };
   },
   methods: {
+    switchToSearch() {
+      this.setSearching(true);
+    },
     toggleTheme() {
       this.toggling = true;
       this.theme === 'light' ? (this.theme = 'dark') : (this.theme = 'light');
@@ -126,12 +136,15 @@ export default {
     border 0.1rem solid #fff
     transition all 0.2s ease-out
 
-    &:hover
+    &--visible
+      transform 0
+      opacity 1
+    &--invisible
+      transform translateY(5%)
+      opacity 0
+
+    &:hover, &:active
       border 0.1rem solid #54a0ff
-
-      &::placeholder
-
-        color #54a0ff
       background #fff
       width 35%
 
