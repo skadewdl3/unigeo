@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View, StyleSheet, FlatList} from 'react-native';
+import {Text, View, StyleSheet, FlatList, ScrollView} from 'react-native';
 import {getTopLevelFolders} from './driveFunctions';
 import File from './components/File';
+import FileList from './layouts/FileList';
 
 const styles = StyleSheet.create({
   body: {
@@ -20,6 +21,10 @@ const styles = StyleSheet.create({
     borderRadius: 1,
     marginTop: 10,
   },
+  fileNameContainer: {
+    paddingLeft: 20,
+    paddingRight: 20,
+  },
 });
 
 const textStyles = StyleSheet.create({
@@ -29,34 +34,47 @@ const textStyles = StyleSheet.create({
     fontSize: 30,
     textAlign: 'center',
   },
+  path: {
+    color: '#000',
+    fontWeight: 'bold',
+    fontSize: 30,
+    paddingBottom: 10,
+  },
 });
 
 const App = () => {
   const [files, setFiles] = useState([]);
   const [fileTree, setFileTree] = useState([]);
+
+  const stickyHeaderData = {
+    text: 'Digital Library',
+  };
+
   useEffect(() => {
+    console.log('useEffect ran');
     fetch('https://unigeo.deta.dev/getfiles')
-      .then(res => res.json())
-      .then(data => setFiles(data.files))
+      .then(res =>
+        res
+          .json()
+          .then(data => setFiles(data.files))
+          .catch(err => console.log(err)),
+      )
       .catch(err => console.log(err));
   }, []);
 
   useEffect(() => {
-    setFileTree(getTopLevelFolders(files));
+    // setFileTree(getTopLevelFolders(files));
+    setFileTree(files);
   }, [files]);
 
   return (
     <View style={{...styles.body}}>
-      <View style={{...styles.navbar}}>
-        <Text style={{...textStyles.title}}>
-          <Text style={{color: '#2980b9'}}>Uni</Text>
-          <Text style={{color: '#2ecc71'}}>Geo</Text>
-        </Text>
-        <View style={{...styles.separator}}></View>
+      <View style={{...styles.fileNameContainer}}>
+        {/* {getTopLevelFolders(files).map(file => (
+          <File name={file.name} key={file.id} />
+        ))} */}
+        <FileList stickyHeaderData={stickyHeaderData} listData={fileTree} />
       </View>
-      {getTopLevelFolders(files).map(file => (
-        <File name={file.name} key={file.id} />
-      ))}
     </View>
   );
 };
