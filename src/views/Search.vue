@@ -15,22 +15,47 @@
         <left-outlined class="search__title--icon" />
         <span>Back</span>
       </span>
-      <input ref="searchBox" class="search__box" placeholder="Search" />
+      <input
+        ref="searchBox"
+        class="search__box"
+        placeholder="Search topics, publishers and more..."
+        @input="
+          e => {
+            this.term = e.target.value;
+          }
+        "
+      />
     </div>
+    <SearchResults
+      :results="this.searchResults"
+      :searching="this.searchInProgress"
+      :term="this.term"
+    />
   </div>
 </template>
 
 <script>
+import throttle from 'lodash.throttle';
+import { searchFor } from './../driveFunctions';
+import SearchResults from './../components/SearchResults.vue';
+
 export default {
   name: 'Search',
   props: ['searching', 'setSearching'],
+  components: {
+    SearchResults
+  },
   data() {
     return {
       searchActive: false,
-      stopSearching: false
+      stopSearching: false,
+      term: '',
+      searchResults: [],
+      searchInProgress: false
     };
   },
   mounted() {
+    this.setSearching(true);
     this.stopSearching = true;
     setTimeout(() => {
       this.stopSearching = false;
@@ -44,6 +69,25 @@ export default {
         this.setSearching(false);
         this.$router.push({ name: 'home' });
       }, 300);
+    },
+
+    makeSearchRequest: throttle(
+      async function () {
+        this.searchInProgress = true;
+        console.log('searching for', this.term);
+        let results = await searchFor(this.term);
+        this.searchResults = results;
+        this.searchInProgress = false;
+      },
+      2000,
+      { leading: false }
+    )
+  },
+  watch: {
+    term() {
+      if (this.term) {
+        this.makeSearchRequest();
+      }
     }
   }
 };
