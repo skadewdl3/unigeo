@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
-const { getFiles, getFilesFromID } = require('./driveFunctions');
+const { getFiles, getFilesFromID, searchFor } = require('./driveFunctions');
 
 const app = express();
 
@@ -26,6 +26,14 @@ app.get('/getfiles', async (req, res) => {
 app.get('/getfilesfromid/:id', async (req, res) => {
   console.log(req.params.id);
   let files = await getFilesFromID(req.params.id);
+  res.json({
+    files
+  });
+});
+
+app.post('/search', async (req, res) => {
+  console.log(req.query.term);
+  let { files } = await searchFor(req.query.term);
   res.json({
     files
   });
