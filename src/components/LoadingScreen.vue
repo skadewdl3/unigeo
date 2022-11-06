@@ -58,7 +58,6 @@ export default {
   display flex
   align-items center
   justify-content center
-  // background rgba(#000, 0.8)
   z-index 100
   transition all 1s ease-in-out
 
@@ -66,7 +65,7 @@ export default {
     color #000
     font-size 1.6rem
     margin 1rem 0
-    font-family 'Baloo 2', 'Open Sans', sans-serif
+    font-family 'Baloo 2', 'Poppins', sans-serif
 
   &--invisible
     opacity 0
@@ -78,23 +77,4 @@ export default {
   align-items center
   justify-content center
   flex-direction column
-
-.spinner__img
-  animation rotation 2s ease-in-out
-  animation-iteration-count infinite
-  transform-origin 50% 50%
-  width 20rem
-  height 20rem
-
-@keyframes rotation {
-  from {
-    transform: rotate(0deg)
-  }
-  80% {
-    transform: rotate(359deg)
-  }
-  to {
-    transform: rotate(359deg)
-  }
-}
 </style>

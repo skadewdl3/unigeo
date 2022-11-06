@@ -15,27 +15,70 @@
         <left-outlined class="search__title--icon" />
         <span>Back</span>
       </span>
-      <input ref="searchBox" class="search__box" placeholder="Search" />
+      <input
+        ref="searchBox"
+        class="search__box"
+        placeholder="Search topics, publishers and more..."
+        @input="
+          e => {
+            this.term = e.target.value;
+          }
+        "
+      />
     </div>
+    <SearchResults
+      :results="this.searchResults"
+      :searching="this.searchInProgress"
+      :term="this.term"
+    />
   </div>
 </template>
 
 <script>
+import throttle from 'lodash.throttle';
+import { searchFor } from './../driveFunctions';
+import SearchResults from './../components/SearchResults.vue';
+
 export default {
   name: 'Search',
-  props: ['searching', 'setSearching'],
+  props: [
+    'searching',
+    'setSearching',
+    'setExpandSearchBar',
+    'setSearchQuery',
+    'expandSearchBar'
+  ],
+  components: {
+    SearchResults
+  },
   data() {
     return {
       searchActive: false,
-      stopSearching: false
+      stopSearching: false,
+      term: '',
+      searchResults: [],
+      searchInProgress: false
     };
   },
   mounted() {
+    this.setSearching(true);
     this.stopSearching = true;
     setTimeout(() => {
       this.stopSearching = false;
       this.$refs.searchBox.focus();
     }, 100);
+
+    let observer = new IntersectionObserver(e => {
+      if (e[0].isIntersecting) {
+        this.setExpandSearchBar(true);
+        this.setSearchQuery('');
+      } else {
+        this.setExpandSearchBar(false);
+        this.setSearchQuery(this.term);
+      }
+    });
+
+    observer.observe(document.querySelector('.search__box'));
   },
   methods: {
     goBack() {
@@ -44,6 +87,30 @@ export default {
         this.setSearching(false);
         this.$router.push({ name: 'home' });
       }, 300);
+    },
+
+    makeSearchRequest: throttle(
+      async function () {
+        this.searchInProgress = true;
+        console.log('searching for', this.term);
+        let results = await searchFor(this.term);
+        this.searchResults = results;
+        this.searchInProgress = false;
+      },
+      2000,
+      { leading: false }
+    )
+  },
+  watch: {
+    term() {
+      if (this.term) {
+        this.makeSearchRequest();
+      }
+    },
+    expandSearchBar() {
+      if (this.expandSearchBar) {
+        window.scrollTo(0, 0);
+      }
     }
   }
 };
