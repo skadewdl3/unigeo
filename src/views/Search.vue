@@ -92,7 +92,6 @@ export default {
     makeSearchRequest: throttle(
       async function () {
         this.searchInProgress = true;
-        console.log('searching for', this.term);
         let results = await searchFor(this.term);
         this.searchResults = results;
         this.searchInProgress = false;

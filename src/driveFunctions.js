@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-let prodEnv = false;
-
 const sortFilesByName = arr => {
   const sorter = (a, b) => {
     if (a.name < b.name) {
@@ -22,19 +20,11 @@ export const getTopLevelFolders = files => {
 };
 
 export const getChildrenFromID = async id => {
-  let { data } = await axios.get(
-    `${
-      prodEnv ? 'https://unigeo.deta.dev' : 'http://localhost:3000'
-    }/getfilesfromid/${id}`
-  );
+  let { data } = await axios.get(`%BASE_URL%/getfilesfromid/${id}`);
   return sortFilesByName(data.files);
 };
 
 export const searchFor = async term => {
-  let { data } = await axios.post(
-    `${
-      prodEnv ? `https://unigeo.deta.dev` : `http://localhost:3000`
-    }/search?term=${term}`
-  );
+  let { data } = await axios.post(`%BASE_URL%/search?term=${term}`);
   return sortFilesByName(data.files);
 };

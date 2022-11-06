@@ -10,8 +10,21 @@ export default defineConfig({
       {
         filter: /\.vue/,
         replace: {
-          from: 'prodEnv = false',
-          to: 'prodEnv = true'
+          from: '%BASE_URL%',
+          to:
+            process.env.NODE_ENV === 'development'
+              ? 'http://localhost:3000'
+              : 'https://unigeo.deta.dev'
+        }
+      },
+      {
+        filter: /\.js/,
+        replace: {
+          from: '%BASE_URL%',
+          to:
+            process.env.NODE_ENV === 'development'
+              ? 'http://localhost:3000'
+              : 'https://unigeo.deta.dev'
         }
       }
     ])

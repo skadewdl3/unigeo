@@ -145,11 +145,7 @@ export default {
       return;
     }
     axios
-      .get(
-        `${
-          prodEnv ? 'https://unigeo.deta.dev' : 'http://localhost:3000'
-        }/getfiles`
-      )
+      .get('%BASE_URL%/getfiles')
       .then(({ data }) => {
         this.files = data.files;
         this.fileTreeString = JSON.stringify(getTopLevelFolders(this.files));
@@ -162,8 +158,6 @@ export default {
 
   watch: {
     searching(newVal, _) {
-      console.log('this ran');
-      console.log(newVal);
       if (newVal) {
         this.saveCurrentState(null);
         setTimeout(() => {

@@ -86,9 +86,6 @@ export default {
       } else {
         this.stopEmojis();
       }
-    },
-    results() {
-      console.log(this.sortedResults);
     }
   }
 };

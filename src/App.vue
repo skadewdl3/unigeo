@@ -2,11 +2,15 @@
 import { RouterView } from 'vue-router';
 import Navbar from './components/Navbar.vue';
 import LoadingScreen from './components/LoadingScreen.vue';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 const showLoading = ref(false);
 const expandSearchBar = ref(false);
 const searching = ref(false);
 const query = ref('');
+
+onMounted(() => {
+  console.log('connected to server: %BASE_URL%');
+});
 </script>
 
 <template>
