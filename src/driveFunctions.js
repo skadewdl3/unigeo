@@ -29,3 +29,12 @@ export const getChildrenFromID = async id => {
   );
   return sortFilesByName(data.files);
 };
+
+export const searchFor = async term => {
+  let { data } = await axios.post(
+    `${
+      prodEnv ? `https://unigeo.deta.dev` : `http://localhost:3000`
+    }/search?term=${term}`
+  );
+  return sortFilesByName(data.files);
+};

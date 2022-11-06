@@ -9,11 +9,16 @@
       </div>
       <div class="search">
         <input
+          :defaultValue="this.searchQuery"
           @click="this.switchToSearch"
           :class="`${
-            this.searching
+            this.expandSearchBar
               ? 'search__input--invisible'
               : 'search__input--visible'
+          } ${
+            this.searching && !this.expandSearchBar
+              ? 'search__input--widen'
+              : ''
           }`"
           type="text"
           class="search__input"
@@ -62,7 +67,13 @@
 <script>
 export default {
   name: 'Navbar',
-  props: ['setSearching', 'searching'],
+  props: [
+    'setSearching',
+    'searching',
+    'expandSearchBar',
+    'searchQuery',
+    'setExpandSearchBar'
+  ],
   computed: {
     currentPosition() {
       return this.theme === 'light' ? 'left' : 'right';
@@ -78,6 +89,7 @@ export default {
   methods: {
     switchToSearch() {
       this.setSearching(true);
+      this.setExpandSearchBar(true);
     },
     toggleTheme() {
       this.toggling = true;
@@ -147,6 +159,12 @@ export default {
       border 0.1rem solid #54a0ff
       background #fff
       width 35%
+
+
+    &--widen
+      width 60%
+      &:hover
+        width 60%
 
 .separator
   display flex
